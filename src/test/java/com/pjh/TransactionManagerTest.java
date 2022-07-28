@@ -2,7 +2,7 @@ package com.pjh;
 
 import static org.junit.Assert.assertTrue;
 
-import com.pjh.mydb.tm.TransactionManager;
+import com.pjh.mydb.server.tm.TransactionManager;
 import org.junit.Test;
 
 import java.io.File;

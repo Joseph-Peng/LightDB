@@ -1,10 +1,9 @@
-package com.pjh.mydb.tm;
+package com.pjh.mydb.server.tm;
 
 import com.pjh.mydb.common.Error;
-import com.pjh.mydb.common.Parser;
-import com.pjh.mydb.utils.Panic;
+import com.pjh.mydb.server.parser.Parser;
+import com.pjh.mydb.server.utils.Panic;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;

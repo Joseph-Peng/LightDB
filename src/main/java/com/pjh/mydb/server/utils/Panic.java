@@ -1,4 +1,4 @@
-package com.pjh.mydb.utils;
+package com.pjh.mydb.server.utils;
 
 /**
  * @author Joseph Peng
