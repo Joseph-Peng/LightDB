@@ -12,4 +12,5 @@ public class Error {
     // common
     public static final Exception FileExistsException = new RuntimeException("TID 文件已存在！");
     public static final Exception FileCannotRWException = new RuntimeException("TID 文件无法读写！");
+    public static final Exception FileNotExistsException = new RuntimeException("TID 文件不存在!");
 }

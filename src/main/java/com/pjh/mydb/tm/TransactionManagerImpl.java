@@ -96,43 +96,114 @@ public class TransactionManagerImpl implements TransactionManager{
         }
     }
 
-    // 根据事务xid取得其在xid文件中对应的位置
+    // 根据事务tid取得其在tid文件中对应的位置
     private long getTidPosition(long tid) {
         return LEN_TID_HEADER_LENGTH + (tid-1)*TID_FIELD_SIZE;
     }
 
+    // 更新tid事务的状态为status
+    private void updateTID(long tid, byte status) {
+        long offset = getTidPosition(tid);
+        byte[] temp = new byte[TID_FIELD_SIZE];
+        temp[0] = status;
+        ByteBuffer buf = ByteBuffer.wrap(temp);
+        try{
+            fc.position(offset);
+            fc.write(buf);
+        }catch (IOException e){
+            Panic.panic(e);
+        }
+
+        try{
+            // force() 方法，强制同步缓存内容到文件中,参数表示是否同步文件的元数据（例如最后修改时间等）
+            fc.force(false);
+        }catch (IOException e){
+            Panic.panic(e);
+        }
+    }
+
+    /**
+     * 开始一个事物，并返回TID
+     * @return 事物ID
+     */
     @Override
     public long begin() {
-        return 0;
+        counterLock.lock();
+        try{
+            long tid = tidCounter + 1;
+            updateTID(tid, FIELD_TRAN_ACTIVE);
+            incrTIDCounter();
+            return tid;
+        }finally {
+            counterLock.unlock();
+        }
+    }
+
+    private void incrTIDCounter() {
+        tidCounter++;
+        ByteBuffer buf = ByteBuffer.wrap(Parser.long2byte(tidCounter));
+        try {
+            fc.position(0);
+            fc.write(buf);
+        }catch (IOException e){
+            Panic.panic(e);
+        }
+
+        try{
+            // force() 方法，强制同步缓存内容到文件中,参数表示是否同步文件的元数据（例如最后修改时间等）
+            fc.force(false);
+        }catch (IOException e){
+            Panic.panic(e);
+        }
     }
 
     @Override
     public void commit(long tid) {
-
+        updateTID(tid, FIELD_TRAN_COMMITTED);
     }
 
     @Override
     public void abort(long tid) {
-
+        updateTID(tid, FIELD_TRAN_ABORTED);
     }
 
     @Override
     public boolean isActive(long tid) {
-        return false;
+        if(tid == SUPER_TID) return false;
+        return checkTIDStatus(tid, FIELD_TRAN_ACTIVE);
+    }
+
+    private boolean checkTIDStatus(long tid, byte status) {
+        long offset = getTidPosition(tid);
+        ByteBuffer buf = ByteBuffer.wrap(new byte[TID_FIELD_SIZE]);
+        try {
+            fc.position(offset);
+            fc.read(buf);
+        } catch (IOException e) {
+            Panic.panic(e);
+        }
+        return buf.array()[0] == status;
     }
 
     @Override
     public boolean isCommitted(long tid) {
-        return false;
+        if (tid == SUPER_TID) return true;
+        return checkTIDStatus(tid, FIELD_TRAN_COMMITTED);
     }
 
     @Override
     public boolean isAborted(long tid) {
-        return false;
+        if (tid == SUPER_TID) return false;
+        return checkTIDStatus(tid, FIELD_TRAN_ABORTED);
     }
 
     @Override
     public void close() {
-
+        try {
+            fc.close();
+            file.close();
+        }catch (IOException e){
+            Panic.panic(e);
+        }
     }
 }

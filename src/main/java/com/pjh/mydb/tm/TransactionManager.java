@@ -97,4 +97,29 @@ public interface TransactionManager {
 
         return new TransactionManagerImpl(raf, fc);
     }
+
+    /**
+     * 从一个已有的 tid 文件来创建 TM
+     * @param path
+     * @return
+     */
+    public static TransactionManagerImpl open(String path){
+        File tidFile = new File(path + TransactionManagerImpl.TID_SUFFIX);
+        if (!tidFile.exists()){
+            Panic.panic(Error.FileNotExistsException);
+        }
+
+        if(!tidFile.canRead() || !tidFile.canWrite()){
+            Panic.panic(Error.FileCannotRWException);
+        }
+        FileChannel fc = null;
+        RandomAccessFile raf = null;
+        try {
+            raf = new RandomAccessFile(tidFile,"rw");
+            fc = raf.getChannel();
+        }catch (FileNotFoundException e) {
+            Panic.panic(e);
+        }
+        return new TransactionManagerImpl(raf, fc);
+    }
 }
