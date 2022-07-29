@@ -13,7 +13,16 @@ public class Parser {
         return byteBuffer.getLong();
     }
 
+    public static short parseShort(byte[] buf){
+        ByteBuffer byteBuffer = ByteBuffer.wrap(buf, 0, 2);
+        return byteBuffer.getShort();
+    }
+
     public static byte[] long2byte(long value){
         return ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(value).array();
+    }
+
+    public static byte[] short2byte(short value){
+        return ByteBuffer.allocate(Short.SIZE / Byte.SIZE).putShort(value).array();
     }
 }
