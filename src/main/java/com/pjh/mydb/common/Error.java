@@ -17,6 +17,9 @@ public class Error {
 
     // DM
     public static final Exception MemTooSmallException   = new RuntimeException("缓存初始设置太小！");
+    public static final Exception BadLogFileException = new RuntimeException("日志文件损坏！");
+    public static final Exception DataTooLargeException = new RuntimeException("OOM，数据太大！");
+    public static final Exception DatabaseBusyException = new RuntimeException("数据库繁忙！");
 
 
 }
