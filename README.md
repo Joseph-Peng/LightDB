@@ -1,5 +1,17 @@
-# MyDB
-基于Java实现的 My MySQL 
+# SimpleDB
+基于Java实现的轻量版MySQL
+
+实现了以下功能：
+
+1. 数据的可靠性和数据恢复
+2. 两段锁协议（2PL）实现可串行化调度
+3. MVCC
+4. 两种事务隔离级别（读提交和可重复读）
+5. 死锁处理
+6. 简单的表和字段管理
+7. 简陋的 SQL 解析（因为懒得写词法分析和自动机，就弄得比较简陋）
+8. 基于 socket 的 server 和 client
+ 
 
 本项目借鉴于[GuoZiyang](https://github.com/CN-GuoZiyang/MYDB) 和[@qw4990](https://github.com/qw4990/NYADB2) 两位大佬的开源项目
 
@@ -72,3 +84,17 @@ DM 为上层模块，提供了两种操作，分别是插入新数据（I）和�
 2. 撤销所有崩溃时未完成（active）的事务
 
 在恢复后，数据库就会恢复到所有已完成事务结束，所有未完成事务尚未开始的状态。
+
+### 数据读写流程
+**读取数据 read(long uid)：**
+
+从DataItem缓存中读取一个DataItem数据包并进行校验，如果DataItem缓存中没有就会调用 
+	DataManager下的getForCache(long uid)从PageCache缓存中读取DataItem数据包并加入DataItem缓存
+	（其实PageCache缓存和DataItem缓存都是共用的一个cache Map存的，只是key不一样，page的key是页号，
+	 DataItem的key是uid，页号+偏移量），如果PgeCache也没有就去数据库文件读取。
+
+**插入数据 insert(long tid, byte[] data)：**
+先把数据打包成DataItem格式，然后在 pageIndex 中获取一个足以存储插入内容的页面的页号； 获取页面后，
+	需要先写入插入日志Recover.insertLog(xid, pg, raw)，接着才可以通过 pageX 在目标数据页插入数据PageX.insert(pg, raw)，
+	并返回插入位置的偏移。如果在pageIndex中没有空闲空间足够插入数据了，就需要新建一个数据页pc.newPage(PageX.initRaw())。
+	最后需要将页面信息重新插入 pageIndex。

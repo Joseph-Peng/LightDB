@@ -68,6 +68,33 @@ public class LoggerImpl implements Logger{
         lock = new ReentrantLock();
     }
 
+    void init() {
+        long size = 0;
+        try {
+            size = raf.length();
+        }catch (IOException e){
+            Panic.panic(e);
+        }
+
+        if(size < 4) {
+            Panic.panic(Error.BadLogFileException);
+        }
+
+        ByteBuffer raw = ByteBuffer.allocate(4);
+        try {
+            fc.position(0);
+            fc.read(raw);
+        }catch (IOException e){
+            Panic.panic(e);
+        }
+
+        int xChecksum = Parser.parseInt(raw.array());
+        this.fileSize = size;
+        this.xChecksum = xChecksum;
+
+        checkAndRemoveTail();
+    }
+
     /**
      * 单条日志的校验和，其实就是通过一个指定的种子实现的
      * @param xCheck
@@ -80,8 +107,6 @@ public class LoggerImpl implements Logger{
         }
         return xCheck;
     }
-
-
 
     /**
      * 在打开一个日志文件时，需要首先校验日志文件的 XChecksum，并移除文件尾部可能存在的 BadTail，
