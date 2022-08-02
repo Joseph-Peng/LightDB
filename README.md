@@ -98,3 +98,61 @@ DM 为上层模块，提供了两种操作，分别是插入新数据（I）和�
 	需要先写入插入日志Recover.insertLog(xid, pg, raw)，接着才可以通过 pageX 在目标数据页插入数据PageX.insert(pg, raw)，
 	并返回插入位置的偏移。如果在pageIndex中没有空闲空间足够插入数据了，就需要新建一个数据页pc.newPage(PageX.initRaw())。
 	最后需要将页面信息重新插入 pageIndex。
+	
+## VM(Version Manager)
+Version Manager 是事务和数据版本的管理核心。
+
+VM 基于两段锁协议实现了调度序列的可串行化，并实现了 MVCC 以消除读写阻塞。同时实现了两种隔离级别。
+
+VM向上层抽象出entry,entry结构：[XMIN] [XMAX] [data];
+XMIN 是创建该条记录（版本）的事务编号，而 XMAX 则是删除该条记录（版本）的事务编号。
+
+XMIN 应当在版本创建时填写，而 XMAX 则在版本被删除，或者有新版本出现时填写。当想删除一个版本时，只需要设置其 XMAX，这样，这个版本对每一个 XMAX 之后的事务都是不可见的，也就等价于删除了。
+
+### 读已提交(ReadCommitted)
+只能读取已经提交事务产生的数据
+
+假设Tid 为 Ti的事务在以下情况可以读取某一条数据
+
+1 . 该数据由Ti创建，且还未被删除，可以读取
+```text
+XMIN == Ti and XMAX == null
+```
+或
+
+2 . 该数据不是Ti创建，由一个已提交的事务创建，且，还未被删除或者由一个未提交的事务删除(且该事物不是Ti)
+```text
+XMIN is committed and  // 由一个已提交的事务创建，且
+  (XMAX == null or  // 尚未删除 或
+   (XMAX != Ti and XMAX is not committed) //由一个未提交的事务删除
+  )
+```
+若条件为 true，则版本对 Ti 可见。那么获取 Ti 适合的版本，只需要从最新版本开始，依次向前检查可见性，如果为 true，就可以直接返回
+
+
+### 可重复读(RepeatableRead)
+事务只能读取它开始时, 就已经结束的那些事务产生的数据版本。事务需要忽略：
+1. 在本事务后开始的事务的数据;
+2. 本事务开始时还是 active 状态的事务的数据
+
+对于第一条，只需要比较事务 ID，即可确定。而对于第二条，则需要在事务 Ti 开始时，记录下当前活跃的所有事务 SP(Ti)，如果记录的某个版本，XMIN 在 SP(Ti) 中，也应当对 Ti 不可见。
+```text
+(XMIN == Ti and                 // 由Ti创建且
+ (XMAX == NULL or               // 尚未被删除
+))
+or                              // 或
+(XMIN is commited and           // 由一个已提交的事务创建且
+ XMIN < Ti and                 // 这个事务小于Ti且
+ XMIN is not in SP(Ti) and      // 这个事务在Ti开始前提交且
+ (XMAX == NULL or               // 尚未被删除或
+  (XMAX != Ti and               // 由其他事务删除但是
+   (XMAX is not commited or     // 这个事务尚未提交或
+XMAX > Ti or                    // 这个事务在Ti开始之后才开始或
+XMAX is in SP(Ti)               // 这个事务在Ti开始前还未提交
+))))
+
+```
+SP为一个Map，记录了在tid启动时状态为active的事务id
+
+
+
