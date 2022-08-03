@@ -9,11 +9,8 @@
 4. 两种事务隔离级别（读提交和可重复读）
 5. 死锁处理
 6. 简单的表和字段管理
-7. 简陋的 SQL 解析（因为懒得写词法分析和自动机，就弄得比较简陋）
+7. 简单的 SQL 解析
 8. 基于 socket 的 server 和 client
- 
-
-本项目借鉴于[GuoZiyang](https://github.com/CN-GuoZiyang/MYDB) 和[@qw4990](https://github.com/qw4990/NYADB2) 两位大佬的开源项目
 
 ## TM(TransactionManager)
 事务管理
@@ -156,3 +153,6 @@ SP为一个Map，记录了在tid启动时状态为active的事务id
 
 
 
+
+
+本项目借鉴于[GuoZiyang](https://github.com/CN-GuoZiyang/MYDB) 和[@qw4990](https://github.com/qw4990/NYADB2) 两位大佬的开源项目
