@@ -21,5 +21,10 @@ public class Error {
     public static final Exception DataTooLargeException = new RuntimeException("OOM，数据太大！");
     public static final Exception DatabaseBusyException = new RuntimeException("数据库繁忙！");
 
+    // vm
+    public static final Exception DeadlockException = new RuntimeException("Deadlock!");
+    public static final Exception ConcurrentUpdateException = new RuntimeException("Concurrent update issue!");
+    public static final Exception NullEntryException = new RuntimeException("Null entry!");
+
 
 }

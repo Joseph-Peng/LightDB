@@ -7,6 +7,23 @@ import com.pjh.mydb.server.tm.TransactionManager;
  * @date 2022/8/2 17:00
  */
 public class Visibility {
+
+    /**
+     * 版本跳跃的判断
+     * @param tm
+     * @param t
+     * @param e
+     * @return
+     */
+    public static boolean isVersionSkip(TransactionManager tm, Transaction t, Entry e) {
+        long xmax = e.getXmax();
+        if(t.level == 0) {
+            return false;
+        } else {
+            return tm.isCommitted(xmax) && (xmax > t.tid || t.isInSnapshot(xmax));
+        }
+    }
+
     public static boolean isVisible(TransactionManager tm, Transaction t, Entry e) {
         if (t.level == 0){
             return readCommitted(tm, t, e);
