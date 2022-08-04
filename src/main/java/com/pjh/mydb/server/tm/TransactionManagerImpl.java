@@ -140,7 +140,7 @@ public class TransactionManagerImpl implements TransactionManager{
 
     private void incrTIDCounter() {
         tidCounter++;
-        ByteBuffer buf = ByteBuffer.wrap(Parser.long2byte(tidCounter));
+        ByteBuffer buf = ByteBuffer.wrap(Parser.long2Byte(tidCounter));
         try {
             fc.position(0);
             fc.write(buf);

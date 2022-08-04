@@ -32,7 +32,7 @@ public class PageX {
      * @param ofData
      */
     private static void setFSO(byte[] raw, short ofData) {
-        System.arraycopy(Parser.short2byte(ofData), 0, raw, OF_FREE, OF_DATA);
+        System.arraycopy(Parser.short2Byte(ofData), 0, raw, OF_FREE, OF_DATA);
     }
 
     /**

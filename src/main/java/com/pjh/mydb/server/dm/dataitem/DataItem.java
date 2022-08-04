@@ -47,7 +47,7 @@ public interface DataItem {
      */
     public static byte[] wrapDataItemRaw(byte[] raw) {
         byte[] valid = new byte[1];
-        byte[] size = Parser.short2byte((short) raw.length);
+        byte[] size = Parser.short2Byte((short) raw.length);
         return Bytes.concat(valid, size, raw);
     }
 

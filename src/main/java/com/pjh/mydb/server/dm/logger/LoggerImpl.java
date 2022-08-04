@@ -175,7 +175,7 @@ public class LoggerImpl implements Logger{
         this.xChecksum = calChecksum(this.xChecksum, log);
         try {
             fc.position(0);
-            fc.write(ByteBuffer.wrap(Parser.int2byte(this.xChecksum)));
+            fc.write(ByteBuffer.wrap(Parser.int2Byte(this.xChecksum)));
             fc.force(false);
         } catch (IOException e) {
             e.printStackTrace();
@@ -183,8 +183,8 @@ public class LoggerImpl implements Logger{
     }
 
     private byte[] wrapLog(byte[] data) {
-        byte[] checksum = Parser.int2byte(calChecksum(0, data));
-        byte[] size = Parser.int2byte(data.length);
+        byte[] checksum = Parser.int2Byte(calChecksum(0, data));
+        byte[] size = Parser.int2Byte(data.length);
         return Bytes.concat(size, checksum, data);
     }
 

@@ -57,7 +57,7 @@ public class Entry {
      * @return
      */
     public static byte[] wrapEntryRaw(long tid, byte[] data) {
-        byte[] xmin = Parser.long2byte(tid);
+        byte[] xmin = Parser.long2Byte(tid);
         byte[] xmax = new byte[8];
         return Bytes.concat(xmin, xmax, data);
     }
@@ -108,7 +108,7 @@ public class Entry {
         dataItem.before();
         try {
             SubArray sa = dataItem.data();
-            System.arraycopy(Parser.long2byte(tid), 0, sa.raw, sa.start+OF_XMAX, 8);
+            System.arraycopy(Parser.long2Byte(tid), 0, sa.raw, sa.start+OF_XMAX, 8);
         }finally {
             // 对修改落日志
             dataItem.after(tid);

@@ -41,7 +41,7 @@ public interface Logger {
             Panic.panic(e);
         }
 
-        ByteBuffer buf = ByteBuffer.wrap(Parser.int2byte(0));
+        ByteBuffer buf = ByteBuffer.wrap(Parser.int2Byte(0));
         try {
             fc.position(0);
             fc.write(buf);

@@ -92,7 +92,7 @@ public class Node {
     }
 
     static void setRawNoKeys(SubArray raw, int noKeys) {
-        System.arraycopy(Parser.short2byte((short)noKeys), 0, raw.raw, raw.start+NO_KEYS_OFFSET, 2);
+        System.arraycopy(Parser.short2Byte((short)noKeys), 0, raw.raw, raw.start+NO_KEYS_OFFSET, 2);
     }
 
     static int getRawNoKeys(SubArray raw) {
@@ -100,7 +100,7 @@ public class Node {
     }
 
     static void setRawSibling(SubArray raw, long sibling) {
-        System.arraycopy(Parser.long2byte(sibling), 0, raw.raw, raw.start+SIBLING_OFFSET, 8);
+        System.arraycopy(Parser.long2Byte(sibling), 0, raw.raw, raw.start+SIBLING_OFFSET, 8);
     }
 
     static long getRawSibling(SubArray raw) {
@@ -109,7 +109,7 @@ public class Node {
 
     static void setRawKthSon(SubArray raw, long uid, int kth) {
         int offset = raw.start+NODE_HEADER_SIZE+kth*(8*2);
-        System.arraycopy(Parser.long2byte(uid), 0, raw.raw, offset, 8);
+        System.arraycopy(Parser.long2Byte(uid), 0, raw.raw, offset, 8);
     }
 
     static long getRawKthSon(SubArray raw, int kth) {
@@ -119,7 +119,7 @@ public class Node {
 
     static void setRawKthKey(SubArray raw, long key, int kth) {
         int offset = raw.start+NODE_HEADER_SIZE+kth*(8*2)+8;
-        System.arraycopy(Parser.long2byte(key), 0, raw.raw, offset, 8);
+        System.arraycopy(Parser.long2Byte(key), 0, raw.raw, offset, 8);
     }
 
     static long getRawKthKey(SubArray raw, int kth) {
