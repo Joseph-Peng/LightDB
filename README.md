@@ -171,4 +171,76 @@ SiblingUid 是其兄弟节点存储在 DM 中的 UID。
 ## TBM(Table Manager)
 TBM主要实现两个功能, 1)利用VM维护表的结构, 2)解析并执行对应的数据库语句.
 
+SQL解析器已经实现的 SQL 语句语法如下
+```sql
+<begin statement>
+    begin [isolation level (read committed|repeatable read)]
+        begin isolation level read committed
+ 
+<commit statement>
+    commit
+ 
+<abort statement>
+    abort
+ 
+<create statement>
+    create table <table name>
+    <field name> <field type>
+    <field name> <field type>
+    ...
+    <field name> <field type>
+    [(index <field name list>)]
+        create table students
+        id int32,
+        name string,
+        age int32,
+        (index id name)
+ 
+<drop statement>
+    drop table <table name>
+        drop table students
+ 
+<select statement>
+    select (*|<field name list>) from <table name> [<where statement>]
+        select * from student where id = 1
+        select name from student where id > 1 and id < 4
+        select name, age, id from student where id = 12
+ 
+<insert statement>
+    insert into <table name> values <value list>
+        insert into student values 5 "Zhang Yuanjia" 22
+ 
+<delete statement>
+    delete from <table name> <where statement>
+        delete from student where name = "Zhang Yuanjia"
+ 
+<update statement>
+    update <table name> set <field name>=<value> [<where statement>]
+        update student set name = "ZYJ" where id = 5
+ 
+<where statement>
+    where <field name> (>|<|=) <value> [(and|or) <field name> (>|<|=) <value>]
+        where age > 10 or age < 3
+ 
+<field name> <table name>
+    [a-zA-Z][a-zA-Z0-9_]*
+ 
+<field type>
+    int32 int64 string
+ 
+<value>
+    .*
+
+```
+
+TBM 基于 VM，单个字段信息和表信息都是直接保存在 Entry 中。字段的二进制表示如下：
+```text
+[FieldName][TypeName][IndexUid]  --> [String][String][long]
+字符串的存储方式为：
+[StringLength][StringData]
+
+TypeName 为字段的类型，限定为 int32、int64 和 string 类型。
+如果这个字段有索引，那个 IndexUID 指向了索引二叉树的根，否则该字段为 0。
+```
+
 本项目借鉴于[GuoZiyang](https://github.com/CN-GuoZiyang/MYDB) 和[@qw4990](https://github.com/qw4990/NYADB2) 两位大佬的开源项目
