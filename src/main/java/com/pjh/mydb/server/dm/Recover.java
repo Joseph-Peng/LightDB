@@ -7,7 +7,7 @@ import com.pjh.mydb.server.dm.logger.Logger;
 import com.pjh.mydb.server.dm.page.Page;
 import com.pjh.mydb.server.dm.page.PageX;
 import com.pjh.mydb.server.dm.pageCache.PageCache;
-import com.pjh.mydb.server.parser.Parser;
+import com.pjh.mydb.server.utils.Parser;
 import com.pjh.mydb.server.tm.TransactionManager;
 import com.pjh.mydb.server.utils.Panic;
 

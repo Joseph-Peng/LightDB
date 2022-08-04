@@ -151,8 +151,24 @@ XMAX is in SP(Ti)               // 这个事务在Ti开始前还未提交
 ```
 SP为一个Map，记录了在tid启动时状态为active的事务id
 
+## IM(Index Manager)
+基于 B+ 树的聚簇索引,目前仅支持基于索引查找数据，不支持全表扫描。
 
+Node的结构如下：
+```text
+[LeafFlag][KeyNumber][SiblingUid]
+[Son0][Key0][Son1][Key1]...[SonN][KeyN]
 
+LeafFlag 标记了该节点是否是个叶子节点；
+KeyNumber 为该节点中 key 的个数；
+SiblingUid 是其兄弟节点存储在 DM 中的 UID。
+后续是穿插的子节点（SonN）和 KeyN。
+最后的一个 KeyN 始终为 MAX_VALUE，以此方便查找。
+```
 
+**IM 对上层模块主要提供两种能力：插入索引和搜索节点。**
+
+## TBM(Table Manager)
+TBM主要实现两个功能, 1)利用VM维护表的结构, 2)解析并执行对应的数据库语句.
 
 本项目借鉴于[GuoZiyang](https://github.com/CN-GuoZiyang/MYDB) 和[@qw4990](https://github.com/qw4990/NYADB2) 两位大佬的开源项目

@@ -1,7 +1,7 @@
 package com.pjh.mydb.server.dm.logger;
 
 import com.pjh.mydb.common.Error;
-import com.pjh.mydb.server.parser.Parser;
+import com.pjh.mydb.server.utils.Parser;
 import com.pjh.mydb.server.utils.Panic;
 
 import java.io.File;

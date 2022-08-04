@@ -26,5 +26,9 @@ public class Error {
     public static final Exception ConcurrentUpdateException = new RuntimeException("Concurrent update issue!");
     public static final Exception NullEntryException = new RuntimeException("Null entry!");
 
+    // parser
+    public static final Exception InvalidCommandException = new RuntimeException("Invalid command!");
+    public static final Exception TableNoIndexException = new RuntimeException("Table has no index!");
+
 
 }
