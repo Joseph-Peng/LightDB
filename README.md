@@ -1,4 +1,4 @@
-# SimpleDB
+# LightDB
 基于Java实现的轻量版MySQL
 
 实现了以下功能：
