@@ -1,8 +1,5 @@
 # LightDB
-基于Java实现的轻量版MySQL
-
-实现了以下功能：
-
+基于Java实现的轻量版MySQL，实现了以下功能：
 1. 数据的可靠性和数据恢复
 2. 两段锁协议（2PL）实现可串行化调度
 3. MVCC
@@ -11,6 +8,23 @@
 6. 简单的表和字段管理
 7. 简单的 SQL 解析
 8. 基于 socket 的 server 和 client
+
+## 运行方式
+需要JDK1.8及以上
+```shell script
+// 1.编译源码
+mvn compile  
+// 2.创建数据库 -create后面表示数据库文件存储的文件夹
+mvn exec:java -Dexec.mainClass="com.pjh.mydb.backend.Launcher" -Dexec.args="-create F:/TestDB/SimpleDB"
+// 3.启动服务器
+mvn exec:java -Dexec.mainClass="com.pjh.mydb.backend.Launcher" -Dexec.args="-open F:/TestDB/SimpleDB"
+// 4.启动客户端
+mvn exec:java -Dexec.mainClass="com.pjh.mydb.client.Launcher"
+```
+
+## 执行示例
+**SQL的语法格式在TBM节有详细介绍**
+![图片](src/main/resources/依赖关系.jpg)
 
 ## TM(TransactionManager)
 事务管理
