@@ -24,7 +24,7 @@ mvn exec:java -Dexec.mainClass="com.pjh.mydb.client.Launcher"
 
 ## 执行示例
 **SQL的语法格式在TBM节有详细介绍**
-![图片](src/main/resources/依赖关系.jpg)
+![图片](src/main/resources/test.jpg)
 
 ## TM(TransactionManager)
 事务管理
