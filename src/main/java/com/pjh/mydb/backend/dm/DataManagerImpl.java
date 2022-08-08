@@ -110,7 +110,7 @@ public class DataManagerImpl extends AbstractCache<DataItem> implements DataMana
      * 3. 最后需要将页面信息重新插入 pageIndex。
      * @param tid
      * @param data
-     * @return
+     * @return  页号+偏移
      * @throws Exception
      */
     @Override
