@@ -134,7 +134,7 @@ public class LoggerImpl implements Logger{
         } catch (Exception e) {
             Panic.panic(e);
         }
-        /*
+
         try {
             // seek(long a)是定位文件指针在文件中的位置。
             // 参数a确定读写位置距离文件开头的字节个数，比如seek(0)就是定位文件指针在开始位置。
@@ -142,7 +142,7 @@ public class LoggerImpl implements Logger{
             raf.seek(position);
         } catch (IOException e) {
             Panic.panic(e);
-        }*/
+        }
 
         rewind();
     }
